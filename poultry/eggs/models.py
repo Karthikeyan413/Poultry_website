@@ -10,15 +10,17 @@ import datetime
     # edit option only to admin or who ?
     # %wt ?
 class bt_lyr(models.Model):
-    batch_no = models.PositiveSmallIntegerField(unique=True)
+    batch_no = models.PositiveSmallIntegerField()
     layer_no = models.PositiveSmallIntegerField()
 
+    class Meta:
+        unique_together = ('batch_no','layer_no',)
     def __str__(self):
-        return 'B'+str(self.batch_no)+" L"+str(self.layer_no)
+        return 'Batch '+str(self.batch_no)+" Layer "+str(self.layer_no)
     
 class eggs(models.Model):
     batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)
-    date_time = models.DateField(editable=True,unique=True,default=datetime.datetime.now().date())
+    date_time = models.DateField(editable=True,default=datetime.datetime.now().date())
     normal = models.PositiveIntegerField(default=0)
     small = models.PositiveIntegerField(default=0)
     big = models.PositiveIntegerField(default=0)
@@ -43,12 +45,14 @@ class eggs(models.Model):
     def save(self,*args,**kwargs):
         if(eggs.objects.all().exists()):
             self.day_total = self.normal + self.small + self.big + self.broken
-            date_time = self.date_time - datetime.timedelta(days=1)
-            # closing_prev = eggs.objects.get(date_time =  date_time).closing
-            # self.closing = closing_prev + self.day_total - self.delivery - self.to_gate - self.spoiled
-            # total_birds_prev =  eggs.objects.get(date_time =  date_time).total_birds
-            # self.total_birds = total_birds_prev - self.mortality - self.sold
-            # self.production = round(((self.day_total/self.total_birds)*100),3)
+            #date_time = self.date_time - datetime.timedelta(days=1)
+            #closing_prev = eggs.objects.get(date_time =  date_time).closing
+            closing_prev = eggs.objects.last().closing
+            self.closing = closing_prev + self.day_total - self.delivery - self.to_gate - self.spoiled
+            #total_birds_prev =  eggs.objects.get(date_time =  date_time).total_birds
+            total_birds_prev =  eggs.objects.last().total_birds
+            self.total_birds = total_birds_prev - self.mortality - self.sold
+            self.production = round(((self.day_total/self.total_birds)*100),3)
 
             super(eggs,self).save(*args,**kwargs)
         else:

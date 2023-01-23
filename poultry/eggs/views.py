@@ -70,8 +70,8 @@ def display(request):
 def eggs_input(request):
     if('pp_bt_layer' not in request.session):
         return HttpResponseRedirect('/batch_layer')
-    if(eggs.objects.filter(date_time =  datetime.datetime.now().date()).exists()):
-        return HttpResponse('Data for this date has already been stored.')
+    #if(eggs.objects.filter(date_time =  datetime.datetime.now().date()).exists()):
+    #   return HttpResponse('Data for this date has already been stored.')
     if request.method == 'POST':
         if(eggs.objects.all().exists()):
             normal_eggs = int(request.POST.get("normal"))
@@ -100,7 +100,7 @@ def eggs_input(request):
             info.sold = sold_birds
             info.mortality = mortality_birds
             info.save()
-            return HttpResponseRedirect('input/success.html')
+            return HttpResponseRedirect('/input/')
             
         else:
             closing_eggs = int(request.POST.get("closing"))
