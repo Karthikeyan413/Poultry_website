@@ -1,0 +1,19 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+.wrapper {
+    min-height: 100%;
+    margin-bottom: -50px;
+}
+#dataset_test > thead > tr > th {
+    text-align: center;
+}
+#footer,
+.push {
+    height: 50px;
+}
+
+/* Rgb(255, 205, 8) */

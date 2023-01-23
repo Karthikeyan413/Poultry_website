@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poultry Login</title>
+    <script src="https://kit.fontawesome.com/cc260aa82c.js" crossorigin="anonymous"></script>
+    <!-- CSS only -->
+    <link rel="stylesheet" href={% static "login.css" %}>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/cc260aa82c.js" crossorigin="anonymous"></script>
+</head>
+<body id="body">
+    <div id="login_container" class="container">
+        <div class="login-wrapper">
+            <h1 class="title" >Login</h1>
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="mb-3 row">
+                    <label for="username" class="col-sm-2 col-form-label"><i class="fa-solid fa-user"></i></label>
+                    <div class="col-sm-10">
+                        <input id="username" class="form-control input" type="text" name="username" placeholder="Username" required>
+                    </div>
+                </div>
+            
+                <div class="mb-3 row">
+                    <label for="pwd" class="col-sm-2 col-form-label"><i class="fa-solid fa-lock"></i></label>
+                    <div class="col-sm-10">
+                    <input id="pwd" class="form-control input" name="pwd" type="password" placeholder="Password" required>
+                    </div>
+                </div>
+                {% if invaliduser %}
+                    <div id='invalid' class="form-text">Username or Password incorrect !</div>
+                    <br>
+                {% endif %}
+                <div class="mb-3 row submit">
+                    <button id="button" type="submit" class="btn btn-outline-primary col-sm-12" name="">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
