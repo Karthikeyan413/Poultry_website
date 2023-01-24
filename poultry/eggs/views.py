@@ -100,7 +100,7 @@ def eggs_input(request):
             info.sold = sold_birds
             info.mortality = mortality_birds
             info.save()
-            return HttpResponseRedirect('input/success.html')
+            return render(request,'input/success.html')
             
         else:
             closing_eggs = int(request.POST.get("closing"))
@@ -117,3 +117,8 @@ def eggs_input(request):
         else:
             exists = False
         return render(request,'input/input1.html',{'exists':exists})
+
+
+
+def success(request):
+    return render(request,'success.html')

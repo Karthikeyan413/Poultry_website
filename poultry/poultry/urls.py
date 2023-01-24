@@ -27,4 +27,5 @@ urlpatterns = [
     path(r'check/(?P<batch_id>[0-9]+)/$', views.check, name='check'),
     path('input/', views.eggs_input,name='input'),
     path('display/', views.display,name='display'),
+     path('success/', views.success,name='success'),
 ]
