@@ -72,8 +72,9 @@ def eggs_input(request):
         return HttpResponseRedirect('/batch_layer')
     #if(eggs.objects.filter(date_time =  datetime.datetime.now().date()).exists()):
     #   return HttpResponse('Data for this date has already been stored.')
+    boolean = eggs.objects.filter(batch_no = request.session.get("batch_id")).exists()
     if request.method == 'POST':
-        if(eggs.objects.all().exists()):
+        if(boolean):
             normal_eggs = int(request.POST.get("normal"))
             small_eggs = int(request.POST.get("small"))
             big_eggs = int(request.POST.get("big"))
@@ -86,8 +87,8 @@ def eggs_input(request):
             mortality_birds = int(request.POST.get("mortality"))
             total_eggs = normal_eggs+small_eggs+big_eggs+broken_eggs
             info = eggs()
-            info.batch_no = bt_lyr.objects.get(batch_no = request.session.get("batch_id"))
-            info.date_time = datetime.datetime.now().date()
+            info.batch_no = bt_lyr.objects.get(id = request.session.get("batch_id"))
+            info.date_time = datetime.datetime.now()
             info.normal = normal_eggs
             info.small = small_eggs
             info.big = big_eggs
@@ -106,13 +107,13 @@ def eggs_input(request):
             closing_eggs = int(request.POST.get("closing"))
             total_birds = int(request.POST.get("total_birds"))
             d1 = eggs()
-            d1.batch_no = bt_lyr.objects.get(batch_no = request.session.get("batch_id"))
+            d1.batch_no = bt_lyr.objects.get(id = request.session.get("batch_id"))
             d1.closing = closing_eggs
             d1.total_birds = total_birds
             d1.save()
             return HttpResponseRedirect('/input/')
     else:
-        if(eggs.objects.all().exists()):
+        if(boolean):
             exists = True
         else:
             exists = False

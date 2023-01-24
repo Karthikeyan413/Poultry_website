@@ -20,7 +20,7 @@ class bt_lyr(models.Model):
     
 class eggs(models.Model):
     batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)
-    date_time = models.DateField(editable=True,default=datetime.datetime.now().date())
+    date_time = models.DateTimeField(editable=True,default=datetime.datetime.now())
     normal = models.PositiveIntegerField(default=0)
     small = models.PositiveIntegerField(default=0)
     big = models.PositiveIntegerField(default=0)
@@ -40,17 +40,18 @@ class eggs(models.Model):
     # initial entry closing & birds ?
     # paper rate ?
     def __str__(self):
-        return f"{self.date_time.strftime('%d-%m-%Y')}"
+        return f"{self.date_time.strftime('%d-%m-%Y %H:%M:%s')}"
 
     def save(self,*args,**kwargs):
-        if(eggs.objects.all().exists()):
+        batch_elements = eggs.objects.filter(batch_no = self.batch_no)
+        if(batch_elements.exists()):
             self.day_total = self.normal + self.small + self.big + self.broken
             #date_time = self.date_time - datetime.timedelta(days=1)
             #closing_prev = eggs.objects.get(date_time =  date_time).closing
-            closing_prev = eggs.objects.last().closing
+            closing_prev = batch_elements.order_by('-id')[0].closing
             self.closing = closing_prev + self.day_total - self.delivery - self.to_gate - self.spoiled
             #total_birds_prev =  eggs.objects.get(date_time =  date_time).total_birds
-            total_birds_prev =  eggs.objects.last().total_birds
+            total_birds_prev =  batch_elements.order_by('-id')[0].total_birds
             self.total_birds = total_birds_prev - self.mortality - self.sold
             self.production = round(((self.day_total/self.total_birds)*100),3)
 
