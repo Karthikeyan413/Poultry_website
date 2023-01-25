@@ -18,7 +18,7 @@ class bt_lyr(models.Model):
     
 class eggs(models.Model):
     batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)
-    date_time = models.DateField(editable=True,unique=True,default=datetime.datetime.now().date())
+    date_time = models.DateField(editable=True,unique=True,default=datetime.datetime.now().date)
     normal = models.PositiveIntegerField(default=0)
     small = models.PositiveIntegerField(default=0)
     big = models.PositiveIntegerField(default=0)
