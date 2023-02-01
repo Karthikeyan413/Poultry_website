@@ -42,10 +42,8 @@
             </div> 
             <!-- <p style="text-align:right">Bhrama Farms</p> -->
             <div class="col-lg-6 text-end">
-                <a href="{% url 'login' %}" class="btn btn-secondary rounded-pill py-3 px-5 animated slideInRight">LOGIN</a>
                 <div class="h-100 bg-secondary d-inline-flex align-items-center text-dark py-2 px-4">
-                   
-                    <span class="me-2 fw-semi-bold"><i class="fa fa-phone-alt me-2"></i>Call Us:</span>
+                   <span class="me-2 fw-semi-bold"><i class="fa fa-phone-alt me-2"></i>Call Us:</span>
                     <span>+012 345 6789</span>
                 </div>
             </div>
@@ -55,10 +53,16 @@
 
 
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5" style="justify-content: center;">
+ 
+    <nav class="navbar navbar-expand-lg bg-white navbar-light  px-4 px-lg-5" style="justify-content: center;">
+        <div>
         <a href="" class="navbar-brand d-flex align-items-center">
             <h1 class="m-0">Bhrama Farms</h1>
         </a>
+        </div>
+        
+       
+        
         <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -88,8 +92,9 @@
             </div>
         </div>
     </div> -->
-   
+    
                 <div class="container">
+                    
                     <div class="carousel-caption">
                             <div class="row justify-content-start">
                                 <div class="col-lg-8 text-start">
@@ -150,9 +155,21 @@
                              </div>
                         </div>
                     
-                   
-
-
+                        <br>
+                        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;" >
+                        
+                            <a href="{% url 'login' %}" class="btn btn-secondary rounded-pill py-3 px-5 animated slideInRight">Login as Supervisor</a>
+                         </div>
+                        <br>
+                            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                            <a href="{% url 'login' %}" class="btn btn-secondary rounded-pill py-3 px-5 animated slideInRight">Login as Office Staff</a>
+                        </div>  
+                        <br>
+                        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                            <a href="{% url 'login_admin' %}" class="btn btn-secondary rounded-pill py-3 px-5 animated slideInRight">Login as Admin</a>
+                
+                        </div>
+    
     <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">

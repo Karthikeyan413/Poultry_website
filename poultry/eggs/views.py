@@ -42,8 +42,13 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/login')
 
+
 def home(request):
     return render(request,'home.html')
+
+# @login_required()
+# def admin(request):
+#     return render(request,'admin.site.urls')
 @login_required()
 def batch_layer(request):
     bt_lyrs = bt_lyr.objects.all()
