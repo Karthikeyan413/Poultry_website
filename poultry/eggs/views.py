@@ -26,7 +26,7 @@ def user_login(request):
         if user:
             if(user.is_active):
                 login(request, user)
-                return HttpResponseRedirect('/batch_layer')
+                return HttpResponseRedirect('/select')
 
             else:
                 return HttpResponse("Account Not Active")
@@ -44,6 +44,16 @@ def user_logout(request):
 
 def home(request):
     return render(request,'home.html')
+
+def select(request):
+    return render(request,'selection.html')
+
+def chicks_input(request):
+    return render(request,'chicks_menu.html')
+
+def new_batch(request):
+    return render(request,'chicks_new_batch.html')
+
 @login_required()
 def batch_layer(request):
     bt_lyrs = bt_lyr.objects.all()

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Add new batch</h5>
+        <a href="{% url 'chicks_new_batch' %}" class="btn btn-primary">Select</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Update feed</h5>
+        <a href="{% url 'chicks_input' %}" class="btn btn-primary">Select</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">move to layer</h5>
+        <a href="{% url 'chicks_input' %}" class="btn btn-primary">Select</a>
+    </div>
+</div>
+{% endblock main%}

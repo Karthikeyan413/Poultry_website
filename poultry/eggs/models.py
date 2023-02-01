@@ -9,6 +9,8 @@ import datetime
     # incorrect info edit option ?
     # edit option only to admin or who ?
     # %wt ?
+
+
 class bt_lyr(models.Model):
     batch_no = models.PositiveSmallIntegerField()
     layer_no = models.PositiveSmallIntegerField()
