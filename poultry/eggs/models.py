@@ -14,11 +14,15 @@ import datetime
 class bt_lyr(models.Model):
     batch_no = models.PositiveSmallIntegerField()
     layer_no = models.PositiveSmallIntegerField()
+    occupied = models.BooleanField()
 
     class Meta:
         unique_together = ('batch_no','layer_no',)
     def __str__(self):
         return 'Batch '+str(self.batch_no)+" Layer "+str(self.layer_no)
+
+class chicks(models.Model):
+    date = models.DateField()
     
 class eggs(models.Model):
     batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-5 mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ date }}" required disabled>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="batch_number" class="form-label">Batch Number</label>
+                <input type="number" class="form-control" id="batch_number" name="batch_number" required>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="total_birds" class="form-label">Total Birds</label>
+                <input type="number" class="form-control" id="total_birds" name="total_birds" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock main%}

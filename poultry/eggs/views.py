@@ -52,7 +52,12 @@ def chicks_input(request):
     return render(request,'chicks_menu.html')
 
 def new_batch(request):
-    return render(request,'chicks_new_batch.html')
+    if request.method == 'POST':
+        return HttpResponseRedirect("/select")
+    else:
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        return render(request,'chicks_new_batch.html',{'date':date})
+        
 
 @login_required()
 def batch_layer(request):
