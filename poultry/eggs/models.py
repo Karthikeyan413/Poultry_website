@@ -42,7 +42,7 @@ class eggs(models.Model):
     total_birds = models.PositiveIntegerField(default=0,editable=False)
     sold = models.PositiveIntegerField(default=0)
     mortality = models.PositiveSmallIntegerField(default=0)
-    
+
     # production greater than 200 ?
     # Negative Values Posible in closing ?
     # initial entry closing & birds ?
@@ -54,7 +54,7 @@ class eggs(models.Model):
         if(eggs.objects.all().exists()):
             self.day_total = self.normal + self.small + self.big + self.broken
             date_time = self.date_time - datetime.timedelta(days=1)
-            # closing_prev = eggs.objects.get(date_time =  date_time).closing
+            #closing = eggs.objects.get(date_time =  date_time).closing
             # self.closing = closing_prev + self.day_total - self.delivery - self.to_gate - self.spoiled
             # total_birds_prev =  eggs.objects.get(date_time =  date_time).total_birds
             # self.total_birds = total_birds_prev - self.mortality - self.sold
