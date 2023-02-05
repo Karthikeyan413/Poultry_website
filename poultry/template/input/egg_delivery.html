@@ -1,0 +1,67 @@
+{% extends 'input/input_base.html' %}
+
+
+{% block nav-content %}
+<i style="color: yellowgreen;" class="">&nbsp;&nbsp; Egg Data Input</i>
+{% endblock nav-content %}
+
+{% block content %}
+{% if exists %}
+    <div class="container">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h1>DELIVERY</h1>
+            <div class="row">
+                <div class="col-2 mb-3">
+                    <label for="normal" class="form-label">Normal </label>
+                    <input id="normal" type="number" class="form-control" name="normal" required>
+                </div>
+                <div class="col-2 mb-3">
+                    <label for="small" class="form-label">Small </label>
+                    <input id="small" type="number" class="form-control" name="small" required>
+                </div>
+                <div class="col-2 mb-3">
+                    <label for="big" class="form-label">Big </label>
+                    <input id="big" type="number" class="form-control" name="big" required>
+                </div>
+                <div class="col-2 mb-3">
+                    <label for="broken" class="form-label">Broken </label>
+                    <input id="broken" type="number" class="form-control" name="broken" required>
+                </div>
+                <div class="col-2 mb-3">
+                    <label for="damage" class="form-label">Damage </label>
+                    <input id="damage" type="number" class="form-control" name="damage" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3 mb-3">
+                    <label for="to_gate" class="form-label">To Gate </label>
+                    <input id="to_gate" type="number" class="form-control" name="to_gate" required>
+                </div>
+                <div class="col-3 mb-3">
+                    <label for="spoiled" class="form-label">Spoiled</label>
+                    <input id="spoiled" type="number" class="form-control" name="spoiled" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% else %}
+    <div class="container">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-5 mb-3">
+                    <label for="closing" class="form-label">Closing</label>
+                    <input type="number" class="form-control" id="closing" name="closing" required>
+                </div>
+                <div class="col-5 mb-3">
+                    <label for="total_birds" class="form-label">Total Birds</label>
+                    <input type="number" class="form-control" id="total_birds" name="total_birds" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endif %}
+{% endblock content %}
