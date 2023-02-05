@@ -17,6 +17,8 @@ class bt_lyr(models.Model):
         return 'B'+str(self.batch_no)+" L"+str(self.layer_no)
     
 class eggs(models.Model):
+    #eggs
+
     batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)
     date_time = models.DateField(editable=True,unique=True,default=datetime.datetime.now().date)
     normal = models.PositiveIntegerField(default=0)
@@ -26,13 +28,21 @@ class eggs(models.Model):
     damage = models.PositiveIntegerField(default=0)
     day_total = models.PositiveIntegerField(default=0,editable=False)
     production = models.FloatField(default=0)
+    closing = models.PositiveIntegerField(default=0,editable=False)
+
+    #delivery
+
     delivery = models.PositiveIntegerField(default=0)
     to_gate = models.PositiveIntegerField(default=0)
     spoiled = models.PositiveIntegerField(default=0)
-    closing = models.PositiveIntegerField(default=0,editable=False)
+
+    #birds
+
+  
     total_birds = models.PositiveIntegerField(default=0,editable=False)
     sold = models.PositiveIntegerField(default=0)
     mortality = models.PositiveSmallIntegerField(default=0)
+    
     # production greater than 200 ?
     # Negative Values Posible in closing ?
     # initial entry closing & birds ?
