@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
 import datetime
 
-from eggs.models import eggs,bt_lyr
+from eggs.models import eggs,bt_lyr,chicks,feed
 # Create your views here.
 
 # @user_passes_test(lambda u: u.is_superuser)
@@ -53,11 +53,38 @@ def chicks_input(request):
 
 def new_batch(request):
     if request.method == 'POST':
+        batch_number = int(request.POST.get("batch_number"))
+        total_birds = int(request.POST.get('total_birds'))
+        chicks_dt = chicks()
+        chicks_dt.active = True
+        chicks_dt.date = datetime.datetime.date
+        chicks_dt.batch_no = batch_number
+        chicks_dt.total_birds = total_birds
+        chicks_dt.save()
         return HttpResponseRedirect("/select")
     else:
         date = datetime.datetime.now().strftime("%Y-%m-%d")
         return render(request,'chicks_new_batch.html',{'date':date})
-        
+
+def feed_input(request):
+    if(request.method == 'POST'):
+        received = int(request.POST.get("received"))
+        meter_reading = int(request.POST.get("meter_reading"))
+        batch_no = int(request.POST.get("batch_no"))
+
+        feed_dt = feed()
+        feed_dt.received = received
+        feed_dt.meter_reading = meter_reading
+        feed_datas = feed.objects.filter(batch_no = batch_no).order_by('-id')[0]
+        feed_dt.used = prev_meter_reading### feed storage with layer or only batch??
+        ## batch is unique for chicks or duplicate??
+        return HttpResponseRedirect('/select')
+    else:
+        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        batch_nos = chicks.objects.filter(active = True)
+        return render(request,"feed_input.html",{'date':date,'batch_nos':batch_nos}) 
+
+
 
 @login_required()
 def batch_layer(request):

@@ -27,7 +27,7 @@ urlpatterns = [
     path('eggs_input/', views.eggs_input,name='eggs_input'),
     path('chicks_input/', views.chicks_input,name='chicks_input'),
     path('new_batch/', views.new_batch,name='chicks_new_batch'),
-    
+    path('feed_input/',views.feed_input,name='feed_input'),
     path('batch_layer/', views.batch_layer,name='batch_layer'),
     path(r'check/(?P<batch_id>[0-9]+)/$', views.check, name='check'),
     path('display/', views.display,name='display'),

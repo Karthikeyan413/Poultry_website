@@ -1,5 +1,3 @@
-from enum import unique
-from pyexpat import model
 from django.db import models
 import datetime
 
@@ -9,11 +7,18 @@ import datetime
     # incorrect info edit option ?
     # edit option only to admin or who ?
     # %wt ?
+class layer(models.Model):
+    layer_no = models.SmallIntegerField(primary_key=True)
 
+class chicks(models.Model):
+    batch_no = models.PositiveSmallIntegerField(primary_key=True)
+    date = models.DateField()
+    total_birds = models.PositiveIntegerField(default=0)
+    active = models.BooleanField()
 
 class bt_lyr(models.Model):
-    batch_no = models.PositiveSmallIntegerField()
-    layer_no = models.PositiveSmallIntegerField()
+    batch_no = models.ForeignKey(chicks,on_delete=models.CASCADE)
+    layer_no = models.ForeignKey(layer,on_delete=models.DO_NOTHING)
     occupied = models.BooleanField()
 
     class Meta:
@@ -21,11 +26,15 @@ class bt_lyr(models.Model):
     def __str__(self):
         return 'Batch '+str(self.batch_no)+" Layer "+str(self.layer_no)
 
-class chicks(models.Model):
-    date = models.DateField()
-    
+class feed(models.Model):
+    bt_lyr = models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
+    received = models.PositiveIntegerField()
+    meter_reading = models.PositiveIntegerField()
+    used = models.IntegerField()
+    gram_per_bird = models.FloatField()
+
 class eggs(models.Model):
-    batch_no = models.ForeignKey(bt_lyr,on_delete=models.CASCADE)
+    batch_no = models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(editable=True,default=datetime.datetime.now())
     normal = models.PositiveIntegerField(default=0)
     small = models.PositiveIntegerField(default=0)
