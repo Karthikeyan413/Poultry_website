@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Update Feed</h5>
+        <a href="{% url 'feed_input' %}" class="btn btn-primary">Select</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Update Chicks</h5>
+        <a href="{% url 'chicks_input' %}" class="btn btn-primary">Select</a>
+    </div>
+</div>
+{% endblock main%}

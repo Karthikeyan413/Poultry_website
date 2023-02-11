@@ -8,14 +8,24 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Update feed</h5>
-        <a href="{% url 'feed_input' %}" class="btn btn-primary">Select</a>
+        <h5 class="card-title">Update Batch</h5>
+        <a href="{% url 'update_batch' %}" class="btn btn-primary">Select</a>
     </div>
 </div>
 <div class="card">
     <div class="card-body">
+        {% if layer_status and batch_status%}
         <h5 class="card-title">move to layer</h5>
-        <a href="{% url 'chicks_input' %}" class="btn btn-primary">Select</a>
+        <a href="{% url 'move_batch' %}" class="btn btn-primary">Select</a>
+        {% else%}
+        <h5 class="card-title">move to layer</h5>
+        <a href="#" class="btn btn-primary disabled">Select</a>
+        {% if batch_status%}
+        <div id='invalid' class="form-text" style="color: red;">Layers are occupied !</div>
+        {% else %}
+        <div id='invalid' class="form-text" style="color: red;">Batchs are not avaliable !</div>
+        {% endif %}
+        {% endif %}
     </div>
 </div>
 {% endblock main%}

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 import datetime
 
 # Create your models here.
@@ -11,11 +12,17 @@ class layer(models.Model):
     layer_no = models.SmallIntegerField(primary_key=True)
     occupied = models.BooleanField()
 
+    def __str__(self):
+        return 'Layer '+str(self.layer_no)+" "+str(self.occupied)
+
 class chicks(models.Model):
     batch_no = models.PositiveSmallIntegerField(primary_key=True)
-    date = models.DateField(default=datetime.datetime.now().date())
+    date = models.DateTimeField(default=timezone.now())
     total_birds = models.PositiveIntegerField(default=0)
     active = models.BooleanField()
+
+    def __str__(self):
+        return 'Batch_no '+str(self.batch_no)+" "+str(self.active)
 
 # class bt_lyr(models.Model):
 #     batch_no = models.PositiveSmallIntegerField()
@@ -28,19 +35,22 @@ class chicks(models.Model):
 
 class chicks_data(models.Model):
     batch_no = models.ForeignKey(chicks,on_delete=models.DO_NOTHING)
-    date = models.DateField(default=datetime.datetime.now().date())
+    date = models.DateTimeField(default=timezone.now())
     total_birds = models.PositiveIntegerField(default=0)
     mortality = models.PositiveIntegerField(default=0)
     sold = models.PositiveIntegerField(default=0)
-
+    def __str__(self):
+        return str(self.batch_no) +" "+ str(self.date.strftime("%Y-%m-%d"))
 
 class feed_chicks(models.Model):
     batch_no = models.ForeignKey(chicks,on_delete=models.DO_NOTHING)
-    # date = models.DateField(default=datetime.datetime.now().date())
+    date = models.DateTimeField(default=timezone.now())
     received = models.PositiveIntegerField(default=0)
     meter_reading = models.PositiveIntegerField(default=0)
     used = models.IntegerField(default=0)
     gram_per_bird = models.FloatField(default=0)
+    def __str__(self):
+        return str(self.batch_no) +" "+ str(self.date.strftime("%Y-%m-%d"))
 
 # class feed_hen(models.Model):
 #     bt_lyr = models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)

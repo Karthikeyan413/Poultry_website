@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <h1></h1>
+            <div class="col-1 mb-3">
+                <label for="batch_no" class="form-label"><b>Batch No:</b></label>
+            </div>
+            <div class="col-6 mb-3">
+                <select name="batch_no" id="batch_no">
+                    {% for i in batch_nos %}
+                    <option value="{{ i.batch_no }}">Batch {{i.batch_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        TO
+        <br>
+        <div class="row">
+            <h1></h1>
+            <div class="col-1 mb-3">
+                <label for="layer_no" class="form-label"><b>Layer No:</b></label>
+            </div>
+            <div class="col-6 mb-3">
+                <select name="layer_no" id="layer_no">
+                    {% for i in layer_nos %}
+                    <option value="{{ i.layer_no }}">Layer {{i.layer_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock main%}

@@ -7,9 +7,9 @@ from django.views.decorators.cache import cache_control
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
-import datetime
+from django.utils import timezone
 
-from eggs.models import chicks,feed_chicks,chicks_data
+from eggs.models import chicks,feed_chicks,chicks_data,layer
 # Create your views here.
 
 # @user_passes_test(lambda u: u.is_superuser)
@@ -48,8 +48,10 @@ def home(request):
 def select(request):
     return render(request,'selection.html')
 
-def chicks_input(request):
-    return render(request,'chicks_menu.html')
+def chicks_menu(request):
+    layer_status = layer.objects.filter(occupied = False).exists()
+    batch_status = chicks.objects.filter(active = True).exists()
+    return render(request,'chicks_menu.html',{'layer_status':layer_status,'batch_status':batch_status})
 
 def new_batch(request):
     if request.method == 'POST':
@@ -62,7 +64,7 @@ def new_batch(request):
         data_feed = feed_chicks()
 
         chicks_dt.active = True
-        chicks_dt.date = datetime.datetime.now().strftime("%Y-%m-%d")
+        chicks_dt.date = timezone.now()
         chicks_dt.batch_no = batch_number
         chicks_dt.total_birds = total_birds
         chicks_dt.save()
@@ -74,9 +76,12 @@ def new_batch(request):
         
         return HttpResponseRedirect("/select")
     else:
-        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        date = timezone.now().strftime("%Y-%m-%d")
         batch_no_suggest = chicks.objects.all().count() + 1
         return render(request,'chicks_new_batch.html',{'date':date,'batch_no_suggest':batch_no_suggest})
+
+def update_batch(request):
+    return render(request,'update_menu.html')
 
 def feed_input(request):
     if(request.method == 'POST'):
@@ -97,10 +102,46 @@ def feed_input(request):
         ## batch is unique for chicks or duplicate??
         return HttpResponseRedirect('/select')
     else:
-        date = datetime.datetime.now().strftime("%Y-%m-%d")
+        date = timezone.now().strftime("%Y-%m-%d")
         batch_nos = chicks.objects.filter(active = True)
         return render(request,"feed_input.html",{'date':date,'batch_nos':batch_nos}) 
 
+def chicks_input(request):
+    if(request.method == 'POST'):
+        mortality = int(request.POST.get("mortality"))
+        sold = int(request.POST.get("sold"))
+        batch_no = int(request.POST.get("batch_no"))
+        
+        chicks_dt = chicks_data()
+        chicks_dt.batch_no = chicks.objects.get(batch_no = batch_no)
+        chicks_dt.mortality = mortality
+        chicks_dt.sold = sold
+        prev_total_birds = chicks_data.objects.filter(batch_no = batch_no).order_by('-id')[0].total_birds
+        total_birds = prev_total_birds - mortality - sold
+        chicks_dt.total_birds = total_birds
+        chicks_dt.save()
+        return HttpResponseRedirect('/select')
+    else:
+        date = timezone.now().strftime("%Y-%m-%d")
+        batch_nos = chicks.objects.filter(active = True)
+        return render(request,"chicks_input.html",{'date':date,'batch_nos':batch_nos})
+
+def move_batch(request):
+    if(request.method == 'POST'):
+        batch_no = int(request.POST.get("batch_no"))
+        layer_no = int(request.POST.get("layer_no"))
+        chicks_id = chicks.objects.get(batch_no = batch_no)
+        chicks_id.active = False
+        chicks_id.save()
+        layer_id = layer.objects.get(layer_no = layer_no)
+        layer_id.occupied = True
+        layer_id.save()
+        #eggs _ conversion
+        return HttpResponseRedirect('/select')
+    else:
+        batch_nos = chicks.objects.filter(active = True)
+        layer_nos = layer.objects.filter(occupied = False)
+        return render(request,"move_to_layer.html",{'batch_nos':batch_nos,'layer_nos':layer_nos})
 
 '''
 @login_required()

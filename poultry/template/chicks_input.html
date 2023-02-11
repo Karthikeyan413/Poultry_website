@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <h1></h1>
+            <div class="col-1 mb-3">
+                <label for="batch_no" class="form-label"><b>Batch No:</b></label>
+            </div>
+            <div class="col-6 mb-3">
+                <select name="batch_no" id="batch_no">
+                    {% for i in batch_nos %}
+                    <option value="{{ i.batch_no }}">Batch {{i.batch_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-5 mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ date }}" required disabled>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="mortality" class="form-label">Mortality</label>
+                <input type="number" class="form-control" id="mortality" name="mortality" required>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="sold" class="form-label">Sold</label>
+                <input type="number" class="form-control" id="sold" name="sold" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock main%}
