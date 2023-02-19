@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <h1></h1>
+            <div class="col-1 mb-3">
+                <label for="bt_lyr" class="form-label"><b>Batch & Layer No:</b></label>
+            </div>
+            <div class="col-6 mb-3">
+                <select name="bt_lyr" id="bt_lyr">
+                    {% for i in bt_lyrs %}
+                    <option value="{{ i.id }}">Batch {{i.batch_no}} Layer {{i.layer_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-5 mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ date }}" required disabled>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="received" class="form-label">Received</label>
+                <input type="number" class="form-control" id="received" name="received" required>
+            </div>
+            <div class="col-5 mb-3">
+                <label for="meter_reading" class="form-label">Meter reading</label>
+                <input type="number" class="form-control" id="meter_reading" name="meter_reading" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock main%}

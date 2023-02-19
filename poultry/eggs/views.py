@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 
-from eggs.models import chicks,feed_chicks,chicks_data,layer
+from eggs.models import chicks,feed_chicks,chicks_data,layer,eggs,bt_lyr,feed_hen
 # Create your views here.
 
 # @user_passes_test(lambda u: u.is_superuser)
@@ -136,6 +136,10 @@ def move_batch(request):
         layer_id = layer.objects.get(layer_no = layer_no)
         layer_id.occupied = True
         layer_id.save()
+        bt_lyr_id = bt_lyr.objects.create(layer_no = layer_id,batch_no = chicks_id,active = True)
+        feed_hen.objects.create(bt_lyr_no = bt_lyr_id)
+        total_birds = chicks_data.objects.filter(batch_no = batch_no).order_by('-id')[0].total_birds
+        eggs_update = eggs.objects.create(bt_lyr_no = bt_lyr_id,total_birds = total_birds)
         #eggs _ conversion
         return HttpResponseRedirect('/select')
     else:
@@ -143,6 +147,31 @@ def move_batch(request):
         layer_nos = layer.objects.filter(occupied = False)
         return render(request,"move_to_layer.html",{'batch_nos':batch_nos,'layer_nos':layer_nos})
 
+def eggs_menu(request):
+    bt_lyrs_status = bt_lyr.objects.filter(active = True).exists()
+    return render(request,'eggs_menu.html',{'bt_lyrs_status':bt_lyrs_status})
+
+def update_feed_hens(request):
+    if(request.method == 'POST'):
+        received = int(request.POST.get("received"))
+        meter_reading = int(request.POST.get("meter_reading"))
+        bt_lyr_no = int(request.POST.get("bt_lyr"))
+
+        feed_dt = feed_hen()
+        feed_dt.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
+        feed_dt.received = received
+        feed_dt.meter_reading = meter_reading
+        prev_meter_reading = feed_hen.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].meter_reading
+        used = prev_meter_reading + received - meter_reading
+        feed_dt.used = used
+        feed_dt.gram_per_bird = (used/10)*100
+        feed_dt.save()
+        ## batch is unique for chicks or duplicate??
+        return HttpResponseRedirect('/select')
+    else:
+        date = timezone.now().strftime("%Y-%m-%d")
+        bt_lyrs = bt_lyr.objects.filter(active = True)
+        return render(request,"feed_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
 '''
 @login_required()
 def batch_layer(request):
