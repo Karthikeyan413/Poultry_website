@@ -32,7 +32,9 @@ urlpatterns = [
     path('chicks_input/',views.chicks_input,name='chicks_input'),
     path('move_batch/',views.move_batch,name='move_batch'),
     path('feed_input_hens/',views.update_feed_hens,name='feed_input_hens'),
+    path('eggs_input_hens/',views.update_eggs_hens,name='eggs_input_hens'),
     # path('batch_layer/', views.batch_layer,name='batch_layer'),
     # path(r'check/(?P<batch_id>[0-9]+)/$', views.check, name='check'),
     # path('display/', views.display,name='display'),
+    path('success/', views.success,name='success'),
 ]

@@ -172,13 +172,8 @@ def update_feed_hens(request):
         date = timezone.now().strftime("%Y-%m-%d")
         bt_lyrs = bt_lyr.objects.filter(active = True)
         return render(request,"feed_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
-'''
-@login_required()
-def batch_layer(request):
-    bt_lyrs = bt_lyr.objects.all()
-    request.session['pp_bt_layer'] = True
-    return render(request,'batch_layer.html',{"bt_lyrs":bt_lyrs})
 
+'''
 @login_required()
 def check(request,batch_id):
     request.session['batch_id'] = batch_id
@@ -186,64 +181,67 @@ def check(request,batch_id):
         return HttpResponseRedirect("/display")
     else:
         return HttpResponseRedirect("/input")
+'''
+
 
 @login_required()
-@user_passes_test(lambda u: u.is_superuser)
-def display(request):
-    if('pp_bt_layer' not in request.session):
-        return HttpResponseRedirect('/batch_layer')
-    egg_dataset = eggs.objects.filter(batch_no = request.session.get("batch_id"))
-    return render(request,'display_child.html',{"eggs_dataset":egg_dataset})
-
-@login_required()
-def eggs_input(request):
-    if('pp_bt_layer' not in request.session):
-        return HttpResponseRedirect('/batch_layer')
-    #if(eggs.objects.filter(date_time =  datetime.datetime.now().date()).exists()):
-    #   return HttpResponse('Data for this date has already been stored.')
-    boolean = eggs.objects.filter(batch_no = request.session.get("batch_id")).exists()
+def update_eggs_hens(request):
+    # if(eggs.objects.filter(date_time =  datetime.datetime.now().date()).exists()):
+        # return HttpResponse('Data for this date has already been stored.')
     if request.method == 'POST':
-        if(boolean):
-            normal_eggs = int(request.POST.get("normal"))
-            small_eggs = int(request.POST.get("small"))
-            big_eggs = int(request.POST.get("big"))
-            broken_eggs = int(request.POST.get("broken"))
-            damage_eggs = int(request.POST.get("damage"))
-            delivery_eggs = int(request.POST.get("delivery"))
-            to_gate_eggs = int(request.POST.get("to_gate"))
-            spoiled_eggs = int(request.POST.get("spoiled"))
-            sold_birds = int(request.POST.get("sold"))
-            mortality_birds = int(request.POST.get("mortality"))
-            total_eggs = normal_eggs+small_eggs+big_eggs+broken_eggs
-            info = eggs()
-            info.batch_no = bt_lyr.objects.get(id = request.session.get("batch_id"))
-            info.date_time = datetime.datetime.now()
-            info.normal = normal_eggs
-            info.small = small_eggs
-            info.big = big_eggs
-            info.broken = broken_eggs
-            info.damage = damage_eggs
-            info.day_total = total_eggs
-            info.delivery = delivery_eggs
-            info.to_gate = to_gate_eggs
-            info.spoiled = spoiled_eggs
-            info.sold = sold_birds
-            info.mortality = mortality_birds
-            info.save()
-            return HttpResponseRedirect('/input/')
-            
-        else:
-            closing_eggs = int(request.POST.get("closing"))
-            total_birds = int(request.POST.get("total_birds"))
-            d1 = eggs()
-            d1.batch_no = bt_lyr.objects.get(id = request.session.get("batch_id"))
-            d1.closing = closing_eggs
-            d1.total_birds = total_birds
-            d1.save()
-            return HttpResponseRedirect('/input/')
+        bt_lyr_no = int(request.POST.get("bt_lyr"))
+        normal_eggs = int(request.POST.get("normal"))
+        small_eggs = int(request.POST.get("small"))
+        big_eggs = int(request.POST.get("big"))
+        broken_eggs = int(request.POST.get("broken"))
+        damage_eggs = int(request.POST.get("damage"))
+        delivery_normal = int(request.POST.get("deliver_normal"))
+        delivery_small = int(request.POST.get("deliver_small"))
+        delivery_big = int(request.POST.get("deliver_big"))
+        delivery_broken = int(request.POST.get("deliver_broken"))
+        to_gate_eggs = int(request.POST.get("to_gate"))
+        spoiled_eggs = int(request.POST.get("spoiled"))
+        sold_birds = int(request.POST.get("sold"))
+        mortality_birds = int(request.POST.get("mortality"))
+        
+        total_eggs = normal_eggs+small_eggs+big_eggs+broken_eggs
+        
+        info = eggs()
+        info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
+        prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].closing
+        prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].total_birds
+
+        total_delivery = delivery_normal + delivery_small + delivery_broken + delivery_big
+        closing = prev_closing + total_eggs - total_delivery - to_gate_eggs - spoiled_eggs
+
+        total_birds = prev_total_birds - sold_birds - mortality_birds
+
+        info.normal = normal_eggs
+        info.small = small_eggs
+        info.big = big_eggs
+        info.broken = broken_eggs
+        info.damage = damage_eggs
+        info.day_total = total_eggs
+        
+        info.delivery_normal = delivery_normal
+        info.delivery_big = delivery_big
+        info.delivery_small = delivery_small
+        info.delivery_broken = delivery_broken
+
+        info.to_gate = to_gate_eggs
+        info.spoiled = spoiled_eggs
+        info.sold = sold_birds
+        info.mortality = mortality_birds
+        info.closing = closing
+        info.total_birds = total_birds
+        info.production = round(((total_eggs/total_birds)*100),3)
+
+        info.save()
+        return render(request,'input/success.html')
     else:
-        if(boolean):
-            exists = True
-        else:
-            exists = False
-        return render(request,'input/input1.html',{'exists':exists})'''
+        date = timezone.now().strftime("%Y-%m-%d")
+        bt_lyrs = bt_lyr.objects.filter(active = True)
+        return render(request,"eggs_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
+
+def success(request):
+    return render(request,'input/success.html')

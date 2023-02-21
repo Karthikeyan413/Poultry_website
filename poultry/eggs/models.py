@@ -98,20 +98,3 @@ class eggs(models.Model):
 
     def __str__(self):
         return f"{self.date_time.strftime('%d-%m-%Y')}"
-
-#     def save(self,*args,**kwargs):
-#         if(eggs.objects.all().exists()):
-#             self.day_total = self.normal + self.small + self.big + self.broken
-#             #date_time = self.date_time - datetime.timedelta(days=1)
-#             #closing_prev = eggs.objects.get(date_time =  date_time).closing
-#             closing_prev = eggs.objects.last().closing
-#             self.closing = closing_prev + self.day_total - self.delivery - self.to_gate - self.spoiled
-#             #total_birds_prev =  eggs.objects.get(date_time =  date_time).total_birds
-#             total_birds_prev =  eggs.objects.last().total_birds
-#             self.total_birds = total_birds_prev - self.mortality - self.sold
-#             self.production = round(((self.day_total/self.total_birds)*100),3)
-
-#             super(eggs,self).save(*args,**kwargs)
-#         else:
-#             self.date_time = datetime.datetime.now()
-#             super(eggs,self).save(*args,**kwargs)
