@@ -1,0 +1,62 @@
+{% extends 'display_base.html' %}
+
+
+{% block nav-content %}
+<i style="color: yellowgreen;" class="">&nbsp;&nbsp; Egg Dataset</i>
+{% endblock nav-content %}
+
+{% block content %}
+<div class="container">
+    <br><br><br>
+
+    <table class="table table-bordered" id="dataset_test" style="text-align: center;" >
+        <thead class="table-success">
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Normal</th>
+                <th>Small</th>
+                <th>Big</th>
+                <th>Broken</th>
+                <th>Damage</th>
+                <th>Day Total</th>
+                <th>Production</th>
+                <th>Delivery Normal</th>
+                <th>Delivery Big</th>
+                <th>Delivery Small</th>
+                <th>Delivery Broken</th>
+                <th>To Gate</th>
+                <th>Spoiled</th>
+                <th>Closing</th>
+                <th>Sold</th>
+                <th>Mortality</th>
+                <th>Total Birds</th>
+            </tr>
+        </thead>
+
+        {% for data in eggs_dataset %}
+        <tr>
+            <td>{{ data.date_time|date:'Y-m-d' }}</td>
+            <td>{{ data.date_time|time }}</td>
+            <td>{{ data.normal }}</td>
+            <td>{{ data.small }}</td>
+            <td>{{ data.big }}</td>
+            <td>{{ data.broken }}</td>
+            <td>{{ data.damage }}</td>
+            <td>{{ data.day_total }}</td>
+            <td>{{ data.production }}</td>
+            <td>{{ data.delivery_normal }}</td>
+            <td>{{ data.delivery_big }}</td>
+            <td>{{ data.delivery_small }}</td>
+            <td>{{ data.delivery_broken }}</td>
+            <td>{{ data.to_gate }}</td>
+            <td>{{ data.spoiled }}</td>
+            <td>{{ data.closing }}</td>
+            <td>{{ data.sold }}</td>
+            <td>{{ data.mortality }}</td>
+            <td>{{ data.total_birds }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>    
+{% endblock content %}

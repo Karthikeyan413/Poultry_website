@@ -36,5 +36,6 @@ urlpatterns = [
     # path('batch_layer/', views.batch_layer,name='batch_layer'),
     # path(r'check/(?P<batch_id>[0-9]+)/$', views.check, name='check'),
     # path('display/', views.display,name='display'),
+    path('display/', views.display,name='display'),
     path('success/', views.success,name='success'),
 ]

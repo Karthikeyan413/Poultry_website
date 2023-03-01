@@ -242,6 +242,15 @@ def update_eggs_hens(request):
         date = timezone.now().strftime("%Y-%m-%d")
         bt_lyrs = bt_lyr.objects.filter(active = True)
         return render(request,"eggs_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
+    
+
+@login_required()
+@user_passes_test(lambda u: u.is_superuser)
+def display(request):
+    if('pp_bt_layer' not in request.session):
+        return HttpResponseRedirect('/batch_layer')
+    egg_dataset = eggs.objects.filter(batch_no = request.session.get("batch_id"))
+    return render(request,'display_child.html',{"eggs_dataset":egg_dataset})
 
 def success(request):
     return render(request,'input/success.html')
