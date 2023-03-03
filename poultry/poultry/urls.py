@@ -19,7 +19,7 @@ from eggs import views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('logout/', views.user_logout, name='logout'),
     path('login/', views.user_login, name='login'),
     path('',views.home,name='home'),
