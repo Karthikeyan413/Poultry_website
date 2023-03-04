@@ -13,7 +13,7 @@ class layer(models.Model):
     occupied = models.BooleanField()
 
     def __str__(self):
-        return 'Layer '+str(self.layer_no)+" "+str(self.occupied)
+        return 'Layer '+str(self.layer_no)+" "+str(self.occupied)[0]
 
 class chicks(models.Model):
     batch_no = models.PositiveSmallIntegerField(primary_key=True)
@@ -22,7 +22,7 @@ class chicks(models.Model):
     active = models.BooleanField()
 
     def __str__(self):
-        return 'Batch_no '+str(self.batch_no)+" "+str(self.active)
+        return 'Batch '+str(self.batch_no)+" "+str(self.active)[0]
 
 
 class chicks_data(models.Model):
@@ -32,7 +32,7 @@ class chicks_data(models.Model):
     mortality = models.PositiveIntegerField(default=0)
     sold = models.PositiveIntegerField(default=0)
     def __str__(self):
-        return str(self.batch_no) +" "+ str(self.date.strftime("%Y-%m-%d"))
+        return str(self.batch_no) +" "+ f"{self.date.strftime('%d-%m-%y')}"
 
 class feed_chicks(models.Model):
     batch_no = models.ForeignKey(chicks,on_delete=models.DO_NOTHING)
@@ -42,7 +42,7 @@ class feed_chicks(models.Model):
     used = models.IntegerField(default=0)
     gram_per_bird = models.FloatField(default=0)
     def __str__(self):
-        return str(self.batch_no) +" "+ str(self.date.strftime("%Y-%m-%d"))
+        return str(self.batch_no) +" "+ f"{self.date.strftime('%d-%m-%y')}"
 
 class bt_lyr(models.Model):
     layer_no = models.ForeignKey(layer,on_delete=models.DO_NOTHING)
@@ -54,7 +54,7 @@ class bt_lyr(models.Model):
         unique_together = ('batch_no','layer_no',)
 
     def __str__(self):
-        return 'Layer '+str(self.layer_no)+" Batch "+str(self.batch_no)
+        return str(self.layer_no)+" "+str(self.batch_no)
 
 class feed_hen(models.Model):
     bt_lyr_no = models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
@@ -64,13 +64,13 @@ class feed_hen(models.Model):
     used = models.IntegerField(default=0)
     gram_per_bird = models.FloatField(default=0)
     def __str__(self):
-        return str(self.bt_lyr_no) +" "+ str(self.date.strftime("%Y-%m-%d"))
+        return str(self.bt_lyr_no) +" "+ f"{self.date.strftime('%d-%m-%y')}"
 
 class eggs(models.Model):
     #eggs
 
     bt_lyr_no =  models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
-    date_time = models.DateTimeField(editable=True,unique=True,default=timezone.now())
+    date_time = models.DateTimeField(editable=True,default=timezone.now())
     normal = models.PositiveIntegerField(default=0)
     small = models.PositiveIntegerField(default=0)
     big = models.PositiveIntegerField(default=0)
@@ -97,4 +97,4 @@ class eggs(models.Model):
     mortality = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.date_time.strftime('%d-%m-%Y')}"
+        return str(self.bt_lyr_no) +" "+f"{self.date_time.strftime('%d-%m-%y')}"

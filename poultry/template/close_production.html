@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <h1>Close porduction of :</h1>
+
+            <div class="col-3 mb-3">
+                <label for="date" class="form-label"><b>Date</b></label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ date }}" required disabled>
+            </div>
+            <div class="col-6 mb-3">
+                <label for="bt_lyr" class="form-label"><b>Batch & Layer No:</b></label>
+                <select name="bt_lyr" id="bt_lyr" class="form-select" >
+                    {% for i in bt_lyrs %}
+                    <option value="{{ i.id }}">{{ i.batch_no }} {{i.layer_no}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Stop Production</button>
+    </form>
+</div>
+{% endblock main%}

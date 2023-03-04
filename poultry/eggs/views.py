@@ -45,14 +45,18 @@ def user_logout(request):
 def home(request):
     return render(request,'home.html')
 
+@login_required()
 def select(request):
-    return render(request,'selection.html')
+    bt_lyrs_status = bt_lyr.objects.filter(active = True).exists()
+    return render(request,'selection.html',{'bt_lyrs':bt_lyrs_status})
 
+@login_required()
 def chicks_menu(request):
     layer_status = layer.objects.filter(occupied = False).exists()
     batch_status = chicks.objects.filter(active = True).exists()
     return render(request,'chicks_menu.html',{'layer_status':layer_status,'batch_status':batch_status})
 
+@login_required()
 def new_batch(request):
     if request.method == 'POST':
         batch_number = int(request.POST.get("batch_number"))
@@ -80,9 +84,11 @@ def new_batch(request):
         batch_no_suggest = chicks.objects.all().count() + 1
         return render(request,'chicks_new_batch.html',{'date':date,'batch_no_suggest':batch_no_suggest})
 
+@login_required()
 def update_batch(request):
     return render(request,'update_menu.html')
 
+@login_required()
 def feed_input(request):
     if(request.method == 'POST'):
         received = int(request.POST.get("received"))
@@ -106,6 +112,7 @@ def feed_input(request):
         batch_nos = chicks.objects.filter(active = True)
         return render(request,"feed_input.html",{'date':date,'batch_nos':batch_nos}) 
 
+@login_required()
 def chicks_input(request):
     if(request.method == 'POST'):
         mortality = int(request.POST.get("mortality"))
@@ -126,6 +133,7 @@ def chicks_input(request):
         batch_nos = chicks.objects.filter(active = True)
         return render(request,"chicks_input.html",{'date':date,'batch_nos':batch_nos})
 
+@login_required()
 def move_batch(request):
     if(request.method == 'POST'):
         batch_no = int(request.POST.get("batch_no"))
@@ -147,10 +155,12 @@ def move_batch(request):
         layer_nos = layer.objects.filter(occupied = False)
         return render(request,"move_to_layer.html",{'batch_nos':batch_nos,'layer_nos':layer_nos})
 
+@login_required()
 def eggs_menu(request):
     bt_lyrs_status = bt_lyr.objects.filter(active = True).exists()
     return render(request,'eggs_menu.html',{'bt_lyrs_status':bt_lyrs_status})
 
+@login_required()
 def update_feed_hens(request):
     if(request.method == 'POST'):
         received = int(request.POST.get("received"))
@@ -242,15 +252,27 @@ def update_eggs_hens(request):
         date = timezone.now().strftime("%Y-%m-%d")
         bt_lyrs = bt_lyr.objects.filter(active = True)
         return render(request,"eggs_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
-    
-
-@login_required()
-@user_passes_test(lambda u: u.is_superuser)
-def display(request):
-    if('pp_bt_layer' not in request.session):
-        return HttpResponseRedirect('/batch_layer')
-    egg_dataset = eggs.objects.filter(batch_no = request.session.get("batch_id"))
-    return render(request,'display_child.html',{"eggs_dataset":egg_dataset})
 
 def success(request):
     return render(request,'input/success.html')
+
+def close_production(request):
+    if request.method == 'POST':
+        bt_lyr_no = int(request.POST.get("bt_lyr"))
+        bt_lyrs = bt_lyr.objects.get(id = bt_lyr_no)
+        bt_lyrs.active = False
+        bt_lyrs.save()
+        return HttpResponse('Production Stopped')
+    else:
+        date = timezone.now().strftime("%Y-%m-%d")
+        bt_lyrs = bt_lyr.objects.filter(active = True)
+        return render(request,"close_production.html",{'date':date,'bt_lyrs':bt_lyrs})
+
+
+#Admin Views
+def admin_menu(request):
+    batches = chicks.objects.filter(active = True)
+    layers = bt_lyr.objects.filter(active = True)
+
+    
+    return render(request,'admin/admin_menu.html',{'batches':batches, 'layers':layers})

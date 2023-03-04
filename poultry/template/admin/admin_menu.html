@@ -12,15 +12,37 @@
         body {
             width: 100vw;
             height: 100vh;
-            display: flex;
+            /* display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            align-items: center; */
         }
     </style>
 </head>
 <body>
-    {% block main %} {% endblock main %}  
+    <div class="container">
+        <h5>Active Batches</h5>
+        {% if not batches %}
+            <p>No active batches</p>
+        {% else %}
+        {% for i in batches %}
+            <p>Batch No :{{ i.batch_no }}</p>
+        {% endfor %}
+        {% endif %}
+
+        <h5>Active Layers</h5>
+        {% if not layers %}
+            <p>No active layers</p>
+        {% else %}
+        {% for i in layers %}
+            <p>Layer No :{{ i.layer_no_id }} => Batch No: {{ i.batch_no_id }}</p>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="container">
+        <h5>Weekly Production</h5>
+        
+    </div>
 
 
 
