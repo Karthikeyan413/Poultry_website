@@ -1,21 +1,30 @@
 {% extends 'base.html' %}
 {% block main %}
-<div class="card">
-    <div class="card-body">
-        {% if bt_lyrs %}
-            <h5 class="card-title">EGGS</h5>
-            <a href="{% url 'eggs_menu' %}" class="btn btn-primary">Select</a>
-        {% else%}
-            <h5 class="card-title">EGGS</h5>
-            <a href="{% url 'eggs_menu' %}" class="btn btn-primary disabled">Select</a>
-            <div id='invalid' class="form-text" style="color: red;">No active layers !</div>
-        {% endif %}
+
+<table>
+    <th style="padding: 40px"><div class="card">
+        <div class="card-body">
+            {% if bt_lyrs %}
+                <h5 class="card-title">EGGS</h5>
+                <a href="{% url 'eggs_menu' %}" class="btn btn-primary">Select</a>
+            {% else%}
+                <h5 class="card-title">EGGS</h5>
+                <a href="{% url 'eggs_menu' %}" class="btn btn-primary disabled">Select</a>
+                <div id='invalid' class="form-text" style="color: red;">No active layers !</div>
+            {% endif %}
+        </div>
     </div>
-</div>
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">CHICKS</h5>
-        <a href="{% url 'chicks_menu' %}" class="btn btn-primary">Select</a>
-    </div>
-</div>
+</th>
+    
+    <th style="padding: 40px">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">CHICKS</h5>
+                <a href="{% url 'chicks_menu' %}" class="btn btn-primary">Select</a>
+            </div>
+        </div>
+    </th>
+   
+</table>
+
 {% endblock main%}
