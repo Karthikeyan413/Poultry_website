@@ -11,7 +11,7 @@
             <div class="col-6 mb-3">
                 <select name="bt_lyr" id="bt_lyr">
                     {% for i in bt_lyrs %}
-                    <option value="{{ i.id }}">Batch {{i.batch_no}} Layer {{i.layer_no}}</option>
+                    <option value="{{ i.id }}">{{i.batch_no}} {{i.layer_no}}</option>
                     {% endfor %}
                 </select>
             </div>
