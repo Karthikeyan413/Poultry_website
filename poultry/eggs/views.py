@@ -9,8 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 
-from eggs.models import *
-from eggs.forms import *
+from eggs.models import chicks,feed_chicks,chicks_data,layer,eggs,bt_lyr,feed_hen,delivery
 # Create your views here.
 
 # @user_passes_test(lambda u: u.is_superuser)
@@ -206,8 +205,7 @@ def update_eggs_hens(request):
         big_eggs = int(request.POST.get("big"))
         broken_eggs = int(request.POST.get("broken"))
         damage_eggs = int(request.POST.get("damage"))
-        to_gate_eggs = int(request.POST.get("to_gate"))
-        spoiled_eggs = int(request.POST.get("spoiled"))
+        
         sold_birds = int(request.POST.get("sold"))
         mortality_birds = int(request.POST.get("mortality"))
         
@@ -230,10 +228,7 @@ def update_eggs_hens(request):
         info.damage = damage_eggs
         info.day_total = total_eggs
         
-        info.delivery = 0
-        info.to_gate = to_gate_eggs
-        info.spoiled = spoiled_eggs
-
+       
         info.sold = sold_birds
         info.mortality = mortality_birds
         # info.closing = closing
@@ -249,30 +244,32 @@ def update_eggs_hens(request):
     
 def update_delivery_hens(request):
     if request.method == 'POST':
-        # bt_lyr_no = int(request.POST.get("bt_lyr"))
+        bt_lyr_no = int(request.POST.get("bt_lyr"))
 
-        vendor_name = int(request.POST.get("vendor_name"))
         delivery_normal = int(request.POST.get("deliver_normal"))
         delivery_small = int(request.POST.get("deliver_small"))
         delivery_big = int(request.POST.get("deliver_big"))
         delivery_broken = int(request.POST.get("deliver_broken"))
+        to_gate_eggs = int(request.POST.get("to_gate"))
+        spoiled_eggs = int(request.POST.get("spoiled"))
 
         info = delivery()
-        # info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
+        info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
 
-        info.name = vendor.objects.get(id = vendor_name)
+
         info.delivery_normal = delivery_normal*30
         info.delivery_big = delivery_big*30
         info.delivery_small = delivery_small*30
         info.delivery_broken = delivery_broken*30
 
+        info.to_gate = to_gate_eggs
+        info.spoiled = spoiled_eggs
 
-        return HttpResponseRedirect('/success')
+        return render(request,'input/success.html')
     else:
         date = timezone.now().strftime("%Y-%m-%d")
-        # bt_lyrs = bt_lyr.objects.filter(active = True)
-        vendor_names = vendor.objects.all()
-        return render(request,"delivery_input_hen.html",{'date':date,'vendor_names':vendor_names})
+        bt_lyrs = bt_lyr.objects.filter(active = True)
+        return render(request,"delivery_input_hen.html",{'date':date,'bt_lyrs':bt_lyrs})
 
 
 def success(request):
@@ -298,27 +295,3 @@ def admin_menu(request):
 
     
     return render(request,'admin/admin_menu.html',{'batches':batches, 'layers':layers})
-
-
-def layer_report(request):
-    report = eggs.objects.all()
-
-    if request.method == 'POST':
-        form = flt_form(request.POST)
-        if(form.is_valid()):
-            bt_lyr_no = form.cleaned_data.get('bt_lyr_no')
-
-            filters = {}
-            if bt_lyr_no:
-                filters['bt_lyr_no'] = bt_lyr.objects.get(id = bt_lyr_no)
-            
-            report = eggs.objects.filter(**filters)
-
-    else:
-        form = flt_form()
-
-    context = {
-        'form': form,
-        'report': report,
-    }
-    return render(request,'office_staff/layer_report.html',context)

@@ -82,7 +82,10 @@ class eggs(models.Model):
 
     #delivery
 
-    delivery = models.PositiveIntegerField(default=0)
+    delivery_normal = models.PositiveIntegerField(default=0)
+    delivery_big = models.PositiveIntegerField(default=0)
+    delivery_small = models.PositiveIntegerField(default=0)
+    delivery_broken = models.PositiveIntegerField(default=0)
     to_gate = models.PositiveIntegerField(default=0)
     spoiled = models.PositiveIntegerField(default=0)
 
@@ -98,30 +101,20 @@ class eggs(models.Model):
     def __str__(self):
         return str(self.bt_lyr_no) +" "+f"{self.date_time.strftime('%d-%m-%y')}"
     
-class vendor(models.Model):
-    date_time = models.DateTimeField(editable=True,default=timezone.now())
-
-    name = models.CharField(max_length=20,blank=False,null=False)
-    company_name = models.CharField(max_length=30,unique=True)
-    phno = models.CharField(max_length=10,unique=True)
-
-    def __str__(self):
-        return str(self.name) + "-" + str(self.company_name).split()[0]
 
 
 class delivery(models.Model):
  
+
+    bt_lyr_no =  models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
     date_time = models.DateTimeField(editable=True,default=timezone.now())
     
-    name = models.ForeignKey(vendor,on_delete=models.DO_NOTHING)
+
     #delivery
 
     delivery_normal = models.PositiveIntegerField(default=0)
     delivery_big = models.PositiveIntegerField(default=0)
     delivery_small = models.PositiveIntegerField(default=0)
     delivery_broken = models.PositiveIntegerField(default=0)
-
-    total = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return str(self.name) + "-" + str(self.date_time)
+    to_gate = models.PositiveIntegerField(default=0)
+    spoiled = models.PositiveIntegerField(default=0)

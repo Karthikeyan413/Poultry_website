@@ -3,7 +3,7 @@
 <div class="container">
     <form action="" method="post">
         {% csrf_token %}
-        <!-- <div class="row">
+        <div class="row">
             <h1></h1>
             <div class="col-1 mb-3">
                 <label for="bt_lyr" class="form-label"><b>Batch & Layer No:</b></label>
@@ -15,20 +15,8 @@
                     {% endfor %}
                 </select>
             </div>
-        </div> -->
-        <div class="row">
-            <h1></h1>
-            <div class="col-1 mb-3">
-                <label for="vendor_name" class="form-label"><b>Vendor Name:</b></label>
-            </div>
-            <div class="col-6 mb-3">
-                <select name="vendor_name" id="vendor_name">
-                    {% for i in vendor_names %}
-                    <option value="{{ i.id }}">{{ i.name }}-{{i.company_name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
         </div>
+
         <div class="row">
             <h1>DELIVERY</h1>
         <div class="row">

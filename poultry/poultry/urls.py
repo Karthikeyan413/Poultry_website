@@ -36,8 +36,5 @@ urlpatterns = [
     path('delivery_input_hens/',views.update_delivery_hens,name='delivery_input_hens'),
     path('success/', views.success,name='success'),
     path('close_production/',views.close_production,name='close_production'),
-
-
     path('admin_report/',views.admin_menu,name='admin_report'),
-    path('layer_report/',views.layer_report,name='layer_report'),
 ]
