@@ -5,6 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
+
+    <style>
+        #report {
+              font-family: Arial, Helvetica, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            #report td, #report th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            
+            #report tr:nth-child(even){background-color: #f2f2f2;}
+            
+            #report tr:hover {background-color: #ddd;}
+            
+            #report th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #3022b4;
+              color: white;
+            }
+
+    </style>
 </head>
 <body>
     <form action="" method="POST">
@@ -12,14 +38,42 @@
         {{ form.as_p }}
         <button type="submit">Filter</button>
     </form>
+    <br> <br>
+   
 
-    <table>
+    <table  class="table" id="report">
+        <thead>
+            <tr>
+              <th scope="col">SNO</th>
+              <th scope="col">DATE</th>
+              <th scope="col">NORMAL</th>
+              <th scope="col">SMALL</th>
+              <th scope="col">BIG</th>
+              <th scope="col">BROKEN</th>
+              <th scope="col">DAMAGE</th>
+              <th scope="col">DAY_TOTAL</th>
+              <th scope="col">TOTAL_BIRDS</th>
+              <th scope="col">SOLD</th>
+              <th scope="col">MORTALITY</th>
+            </tr>
+          </thead>
+          <tbody>
         {% for row in report %}
         <tr>
-            <td>date = {{ row.date_time  }}</td>
-            <td>Normal = {{ row.normal }}</td>
+            <td scope="row">{{ forloop.counter }}</th>
+            <td>{{ row.date_time  }}</td>
+            <td>{{ row.normal }}</td>
+            <td>{{ row.small }}</td>
+            <td>{{ row.big }}</td>
+            <td>{{ row.broken }}</td>
+            <td>{{ row.damage }}</td>
+            <td>{{ row.day_total }}</td>
+            <td>{{ row.total_birds }}</td>
+            <td>{{ row.sold }}</td>
+            <td>{{ row.mortality }}</td>
         </tr>
         {% endfor %}
+        </tbody>
     </table>
 </body>
 </html>

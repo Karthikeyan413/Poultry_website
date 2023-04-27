@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
-
+from datetime import datetime
 from eggs.models import *
 from eggs.forms import *
 # Create your views here.
@@ -303,19 +303,32 @@ def admin_menu(request):
 def layer_report(request):
     report = eggs.objects.all()
 
+
     if request.method == 'POST':
         form = flt_form(request.POST)
         if(form.is_valid()):
             bt_lyr_no = form.cleaned_data.get('bt_lyr_no')
+            start_date = form.cleaned_data.get('date_time')
+            end_date = form.cleaned_data.get('date_time')
+   
+            # start_date=datetime.datetime(start_date.toordinal(),datetime.min.time())
+            # end_date=datetime.combine(end_date,datetime.min.time())
 
             filters = {}
             if bt_lyr_no:
                 filters['bt_lyr_no'] = bt_lyr.objects.get(id = bt_lyr_no)
+
+            # if start_date:
+            #     filters['date_time__range']=(start_date,end_date)
+            # if end_date:
+            #     filters['date_time'] = bt_lyr.objects.filter(date_time = end_date )
+
             
             report = eggs.objects.filter(**filters)
 
     else:
         form = flt_form()
+   
 
     context = {
         'form': form,
