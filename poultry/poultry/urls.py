@@ -33,6 +33,7 @@ urlpatterns = [
     path('move_batch/',views.move_batch,name='move_batch'),
     path('feed_input_hens/',views.update_feed_hens,name='feed_input_hens'),
     path('eggs_input_hens/',views.update_eggs_hens,name='eggs_input_hens'),
+    path('delivery_input_hens/',views.update_delivery_hens,name='delivery_input_hens'),
     path('success/', views.success,name='success'),
     path('close_production/',views.close_production,name='close_production'),
     path('admin_report/',views.admin_menu,name='admin_report'),

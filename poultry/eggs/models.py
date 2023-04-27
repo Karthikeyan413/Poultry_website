@@ -96,5 +96,25 @@ class eggs(models.Model):
     sold = models.PositiveIntegerField(default=0)
     mortality = models.PositiveSmallIntegerField(default=0)
 
+
+
     def __str__(self):
         return str(self.bt_lyr_no) +" "+f"{self.date_time.strftime('%d-%m-%y')}"
+    
+
+
+class delivery(models.Model):
+ 
+
+    bt_lyr_no =  models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING)
+    date_time = models.DateTimeField(editable=True,default=timezone.now())
+    
+
+    #delivery
+
+    delivery_normal = models.PositiveIntegerField(default=0)
+    delivery_big = models.PositiveIntegerField(default=0)
+    delivery_small = models.PositiveIntegerField(default=0)
+    delivery_broken = models.PositiveIntegerField(default=0)
+    to_gate = models.PositiveIntegerField(default=0)
+    spoiled = models.PositiveIntegerField(default=0)
