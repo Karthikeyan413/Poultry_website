@@ -257,10 +257,10 @@ def update_delivery_hens(request):
         info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
 
 
-        info.delivery_normal = delivery_normal
-        info.delivery_big = delivery_big
-        info.delivery_small = delivery_small
-        info.delivery_broken = delivery_broken
+        info.delivery_normal = delivery_normal*30
+        info.delivery_big = delivery_big*30
+        info.delivery_small = delivery_small*30
+        info.delivery_broken = delivery_broken*30
 
         info.to_gate = to_gate_eggs
         info.spoiled = spoiled_eggs
