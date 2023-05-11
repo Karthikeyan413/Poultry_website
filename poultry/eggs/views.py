@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -216,7 +216,7 @@ def update_eggs_hens(request):
 
 
        
-        if(eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+        if(eggs.objects.all().exists() and eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
             info = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0]
             prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].closing
             prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].total_birds
@@ -241,7 +241,6 @@ def update_eggs_hens(request):
         info.delivery = total_delivery
         info.to_gate = to_gate_eggs
         info.spoiled = spoiled_eggs
-
         info.sold = sold_birds
         info.mortality = mortality_birds
         info.closing = closing
@@ -266,7 +265,7 @@ def update_delivery_hens(request):
         delivery_broken = int(request.POST.get("deliver_broken"))
 
         info = delivery()
-        if(delivery.objects.filter(name = vendor_name).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+        if(delivery.objects.all().exists()  and delivery.objects.filter(name = vendor_name).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
             info = delivery.objects.filter(name = vendor_name).order_by('-id')[0]
         else:
             info = delivery()
@@ -322,21 +321,20 @@ def layer_report(request):
     if request.method == 'POST':
         form = flt_form(request.POST)
         if(form.is_valid()):
-            bt_lyr_no = form.cleaned_data.get('bt_lyr_no')
-            start_date = form.cleaned_data.get('date_time')
-            end_date = form.cleaned_data.get('date_time')
+            bt_no = form.cleaned_data.get('bt_no')
+            lyr_no = form.cleaned_data.get('lyr_no')
+            start_date = form.cleaned_data.get('start_date')
+            end_date = form.cleaned_data.get('end_date')
    
             # start_date=datetime.datetime(start_date.toordinal(),datetime.min.time())
             # end_date=datetime.combine(end_date,datetime.min.time())
 
             filters = {}
-            if bt_lyr_no:
-                filters['bt_lyr_no'] = bt_lyr.objects.get(id = bt_lyr_no)
+            if bt_no and lyr_no:
+                filters['bt_lyr_no'] = bt_lyr.objects.get(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no))
 
-            # if start_date:
-            #     filters['date_time__range']=(start_date,end_date)
-            # if end_date:
-            #     filters['date_time'] = bt_lyr.objects.filter(date_time = end_date )
+            if start_date and end_date:
+                filters['date_time__range'] = (start_date, end_date)
 
             
             report = eggs.objects.filter(**filters)
