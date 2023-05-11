@@ -328,11 +328,16 @@ def layer_report(request):
    
             # start_date=datetime.datetime(start_date.toordinal(),datetime.min.time())
             # end_date=datetime.combine(end_date,datetime.min.time())
-
+            if(not (layer.objects.filter(layer_no = lyr_no).exists() and chicks.objects.filter(batch_no = bt_no).exists())):
+                return HttpResponse("Invalid layer or batch no")
             filters = {}
             if bt_no and lyr_no:
-                filters['bt_lyr_no'] = bt_lyr.objects.get(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no))
-
+                if(bt_lyr.objects.filter(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no)).exists()):
+                    filters['bt_lyr_no'] = bt_lyr.objects.get(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no))
+                else:
+                    # return HttpResponse("No such batch layer combination exist")
+                    filters['bt_lyr_no'] = -1
+                
             if start_date and end_date:
                 filters['date_time__range'] = (start_date, end_date)
 
