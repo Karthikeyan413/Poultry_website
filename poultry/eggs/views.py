@@ -212,17 +212,25 @@ def update_eggs_hens(request):
         mortality_birds = int(request.POST.get("mortality"))
         
         total_eggs = normal_eggs+small_eggs+big_eggs+broken_eggs
-        
-        info = eggs()
-        info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
-        prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].closing
-        prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].total_birds
+    
 
-        # total_delivery = delivery_normal + delivery_small + delivery_broken + delivery_big
-        # closing = prev_closing + total_eggs - total_delivery - to_gate_eggs - spoiled_eggs
 
+       
+        if(eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+            info = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0]
+            prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].closing
+            prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].total_birds
+
+        else:
+            info = eggs()
+            info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
+            prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].closing
+            prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].total_birds
+
+        total_delivery = 0
+        closing = prev_closing + total_eggs - total_delivery - to_gate_eggs - spoiled_eggs
         total_birds = prev_total_birds - sold_birds - mortality_birds
-
+        
         info.normal = normal_eggs
         info.small = small_eggs
         info.big = big_eggs
@@ -230,17 +238,17 @@ def update_eggs_hens(request):
         info.damage = damage_eggs
         info.day_total = total_eggs
         
-        info.delivery = 0
+        info.delivery = total_delivery
         info.to_gate = to_gate_eggs
         info.spoiled = spoiled_eggs
 
         info.sold = sold_birds
         info.mortality = mortality_birds
-        # info.closing = closing
+        info.closing = closing
         info.total_birds = total_birds
         info.production = round(((total_eggs/total_birds)*100),3)
 
-        #info.save()
+        info.save()
         return render(request,'input/success.html')
     else:
         date = timezone.now().strftime("%Y-%m-%d")
@@ -258,6 +266,10 @@ def update_delivery_hens(request):
         delivery_broken = int(request.POST.get("deliver_broken"))
 
         info = delivery()
+        if(delivery.objects.filter(name = vendor_name).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+            info = delivery.objects.filter(name = vendor_name).order_by('-id')[0]
+        else:
+            info = delivery()
         # info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
 
         info.name = vendor.objects.get(id = vendor_name)
@@ -265,6 +277,9 @@ def update_delivery_hens(request):
         info.delivery_big = delivery_big*30
         info.delivery_small = delivery_small*30
         info.delivery_broken = delivery_broken*30
+        total_delivery = info.delivery_normal + info.delivery_big + info.delivery_small + info.delivery_broken
+        info.total_delivery = total_delivery
+        info.save()
 
 
         return HttpResponseRedirect('/success')

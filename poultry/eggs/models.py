@@ -87,8 +87,6 @@ class eggs(models.Model):
     spoiled = models.PositiveIntegerField(default=0)
 
     #birds
-
-  
     total_birds = models.PositiveIntegerField(default=0)
     sold = models.PositiveIntegerField(default=0)
     mortality = models.PositiveSmallIntegerField(default=0)
@@ -121,7 +119,7 @@ class delivery(models.Model):
     delivery_small = models.PositiveIntegerField(default=0)
     delivery_broken = models.PositiveIntegerField(default=0)
 
-    total = models.PositiveIntegerField(default=0)
+    total_delivery = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return str(self.name) + "-" + str(self.date_time)
+        return str(self.name) + "-" + f"{self.date_time.strftime('%d-%m-%y')}"
