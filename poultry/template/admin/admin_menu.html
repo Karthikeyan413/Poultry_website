@@ -17,31 +17,58 @@
             justify-content: center;
             align-items: center; */
         }
+        .flex {
+            display: flex;
+            justify-content: space-around;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h5>Active Batches</h5>
-        {% if not batches %}
-            <p>No active batches</p>
-        {% else %}
-        {% for i in batches %}
-            <p>Batch No :{{ i.batch_no }}</p>
-        {% endfor %}
-        {% endif %}
-
-        <h5>Active Layers</h5>
-        {% if not layers %}
-            <p>No active layers</p>
-        {% else %}
-        {% for i in layers %}
-            <p>Layer No :{{ i.layer_no_id }} => Batch No: {{ i.batch_no_id }}</p>
-        {% endfor %}
-        {% endif %}
+    <div class="container flex">
+        <div>
+            <h5>Active Layers</h5>
+            {% if not layers %}
+                <p>No active layers</p>
+            {% else %}
+            {% for i in layers %}
+                <p>Layer No :{{ i.layer_no_id }} => Batch No: {{ i.batch_no_id }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            <h5>Active Batches</h5>
+            {% if not batches %}
+                <p>No active batches</p>
+            {% else %}
+            {% for i in batches %}
+                <p>Batch No :{{ i.batch_no }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+        
     </div>
     <div class="container">
-        <h5>Weekly Production</h5>
-        
+        <h5 style="text-align: center;">Weekly Production</h5>
+        <div class="flex">
+            <div>
+                <div style="display:flex;">
+                    {% for i in dict.values %}
+                        <div style="border: solid;">
+                            <p>Layer {{ i.1 }} Batch {{ i.0 }}</p>
+                            <p>Avg_production = {{i.2}}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Filter</button>
+                </form>
+                <b>Average Production</b> = {{ avg_production }}
+            </div>
+        </div>
     </div>
 
 

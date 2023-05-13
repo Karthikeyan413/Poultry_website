@@ -1,19 +1,28 @@
 from django.shortcuts import render
 from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
-from datetime import datetime
-from eggs.models import *
-from eggs.forms import *
-# Create your views here.
+from datetime import timedelta
+import datetime
+from django.db.models import Avg
 
-# @user_passes_test(lambda u: u.is_superuser)
+from eggs.forms import *
+from eggs.models import *
+
+def week_range(date):
+   year, week, dow = date.isocalendar()
+   if dow == 7:
+       start_date = date
+   else:
+       start_date = date - timedelta(dow)
+   end_date = start_date + timedelta(6)
+   return (start_date, end_date)
+
 @csrf_protect
 def user_login(request):
     if(request.user.is_authenticated):
@@ -27,7 +36,16 @@ def user_login(request):
         if user:
             if(user.is_active):
                 login(request, user)
-                return HttpResponseRedirect('/select')
+                if(userRoles.objects.filter(username = User.objects.get(username = username)).exists()):
+                    role = userRoles.objects.filter(username = User.objects.get(username = username))[0].get_role_display()
+                    if(role == "admin"):
+                        return HttpResponseRedirect("/admin_report")
+                    elif(role == "supervisor"):
+                        return HttpResponseRedirect("/select")
+                    else:
+                        return HttpResponseRedirect("/layer_report")
+                else:
+                    return HttpResponse("No active role found")
 
             else:
                 return HttpResponse("Account Not Active")
@@ -309,9 +327,64 @@ def close_production(request):
 def admin_menu(request):
     batches = chicks.objects.filter(active = True)
     layers = bt_lyr.objects.filter(active = True)
-
+    reports = eggs.objects.all()
     
-    return render(request,'admin/admin_menu.html',{'batches':batches, 'layers':layers})
+    batch_layer_nos = []
+    for l in layers:
+        batch_layer_nos.append(l)
+    weekly_report = eggs.objects.filter(bt_lyr_no__in = batch_layer_nos,date_time__range = week_range(datetime.date.today()))
+    weekly_report = weekly_report.values('bt_lyr_no').annotate(avg_production = Avg('production'))
+    
+    batch_layer_nos = []
+    for i in weekly_report:
+        batch_layer_nos.append(i['bt_lyr_no'])
+    batch_layer_nos = bt_lyr.objects.filter(id__in = batch_layer_nos)
+
+    dict = {}
+    for val in batch_layer_nos:
+        dict[str(val.id)] = [val.batch_no.batch_no,val.layer_no.layer_no]
+    avg_production = 0
+
+    for i in range(0,len(weekly_report)):
+        dict[str(weekly_report[i]['bt_lyr_no'])].append(weekly_report[i]['avg_production'])
+
+    if request.method == 'POST':
+        form = flt_form(request.POST)
+        if(form.is_valid()):
+            bt_no = form.cleaned_data.get('bt_no')
+            lyr_no = form.cleaned_data.get('lyr_no')
+            start_date = form.cleaned_data.get('start_date')
+            end_date = form.cleaned_data.get('end_date')
+   
+            if(not (layer.objects.filter(layer_no = lyr_no).exists() and chicks.objects.filter(batch_no = bt_no).exists())):
+                return HttpResponse("Invalid layer or batch no")
+            filters = {}
+            if bt_no and lyr_no:
+                if(bt_lyr.objects.filter(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no)).exists()):
+                    filters['bt_lyr_no'] = bt_lyr.objects.get(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no))
+                else:
+                    filters['bt_lyr_no'] = -1
+                
+            if start_date and end_date:
+                filters['date_time__range'] = (start_date, end_date)
+
+            reports = eggs.objects.filter(**filters)
+
+    else:
+        form = flt_form()
+    if(reports.exists()):
+        for i,record in enumerate(reports,1):
+            avg_production += record.production
+        avg_production = avg_production/i
+
+    # print(batch_layer_nos.values('layer_no','batch_no'))
+
+    context = {'batches':batches,
+               'layers':layers,
+               'form': form,
+               'avg_production': avg_production,
+               'dict': dict}
+    return render(request,'admin/admin_menu.html',context)
 
 
 def layer_report(request):
@@ -326,8 +399,6 @@ def layer_report(request):
             start_date = form.cleaned_data.get('start_date')
             end_date = form.cleaned_data.get('end_date')
    
-            # start_date=datetime.datetime(start_date.toordinal(),datetime.min.time())
-            # end_date=datetime.combine(end_date,datetime.min.time())
             if(not (layer.objects.filter(layer_no = lyr_no).exists() and chicks.objects.filter(batch_no = bt_no).exists())):
                 return HttpResponse("Invalid layer or batch no")
             filters = {}
@@ -335,7 +406,6 @@ def layer_report(request):
                 if(bt_lyr.objects.filter(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no)).exists()):
                     filters['bt_lyr_no'] = bt_lyr.objects.get(layer_no = layer.objects.get(layer_no = lyr_no),batch_no = chicks.objects.get(batch_no = bt_no))
                 else:
-                    # return HttpResponse("No such batch layer combination exist")
                     filters['bt_lyr_no'] = -1
                 
             if start_date and end_date:

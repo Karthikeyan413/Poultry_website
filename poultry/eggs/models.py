@@ -1,13 +1,19 @@
 from django.db import models
 from django.utils import timezone
-import datetime
-
+from django.contrib.auth.models import User
 # Create your models here.
 
     #primary key dates or duplicate dates ?
     # incorrect info edit option ?
     # edit option only to admin or who ?
     # %wt ?
+class userRoles(models.Model):
+    roles = [('A','admin'),
+             ('S','supervisor'),
+             ('O','office_staff')]
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    role = models.CharField(max_length=1,choices=roles)
+    
 class layer(models.Model):
     layer_no = models.SmallIntegerField(primary_key=True)
     occupied = models.BooleanField()

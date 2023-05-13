@@ -3,6 +3,7 @@ from eggs.models import *
 
 
 # Register your models here.
+admin.site.register(userRoles)
 admin.site.register(layer)
 admin.site.register(chicks)
 admin.site.register(chicks_data)
