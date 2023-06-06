@@ -324,6 +324,28 @@ def close_production(request):
 
 
 #Admin Views
+def add_user(request):
+    if request.method == 'POST':
+        form = add_form(request.POST)
+        if(form.is_valid()):
+            uname = form.cleaned_data.get('username')
+            pwd = form.cleaned_data.get('pwd')
+            role = form.cleaned_data.get('role')
+            user = User()
+            user.username = uname
+            user.password = pwd
+            user.save()
+            roles = userRoles()
+            roles.username = user
+            roles.role = role
+            roles.save()
+            return HttpResponseRedirect('/admin_report');
+    else:
+        form = add_form()
+        context = {'form': form,}
+        return render(request,'admin/add_user.html',context)
+    
+
 def admin_menu(request):
     batches = chicks.objects.filter(active = True)
     layers = bt_lyr.objects.filter(active = True)

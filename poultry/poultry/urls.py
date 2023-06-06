@@ -37,7 +37,7 @@ urlpatterns = [
     path('success/', views.success,name='success'),
     path('close_production/',views.close_production,name='close_production'),
 
-
+    path('add_user/', views.add_user, name='add_user'),
     path('admin_report/',views.admin_menu,name='admin_report'),
     path('layer_report/',views.layer_report,name='layer_report'),
 ]
