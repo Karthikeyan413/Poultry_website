@@ -14,3 +14,12 @@ class add_form(forms.Form):
     username = forms.CharField()
     pwd = forms.CharField(widget=forms.TextInput(attrs={'type': 'password'}))
     role = forms.ChoiceField(choices=roles)
+
+class add_layerForm(forms.Form):
+    layer_no = forms.IntegerField()
+    occupied = forms.BooleanField(required=False)
+
+class add_vendorForm(forms.Form):
+    name = forms.CharField(max_length=20)
+    company_name = forms.CharField(max_length=30)
+    phno = forms.IntegerField()

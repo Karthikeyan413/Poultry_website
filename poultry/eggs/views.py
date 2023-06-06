@@ -122,7 +122,8 @@ def feed_input(request):
         prev_meter_reading = feed_chicks.objects.filter(batch_no = batch_no).order_by('-id')[0].meter_reading
         used = prev_meter_reading + received - meter_reading
         feed_dt.used = used
-        feed_dt.gram_per_bird = (used/10)*100
+        total_chicks = chicks_data.objects.filter(batch_no = batch_no).order_by('-id')[0].total_birds
+        feed_dt.gram_per_bird = (used/total_chicks)*1000
         feed_dt.save()
         ## batch is unique for chicks or duplicate??
         return HttpResponseRedirect('/select')
@@ -192,8 +193,9 @@ def update_feed_hens(request):
         feed_dt.meter_reading = meter_reading
         prev_meter_reading = feed_hen.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].meter_reading
         used = prev_meter_reading + received - meter_reading
+        total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].total_birds
         feed_dt.used = used
-        feed_dt.gram_per_bird = (used/10)*100
+        feed_dt.gram_per_bird = (used/total_birds)*1000
         feed_dt.save()
         ## batch is unique for chicks or duplicate??
         return HttpResponseRedirect('/select')
@@ -232,9 +234,7 @@ def update_eggs_hens(request):
         total_eggs = normal_eggs+small_eggs+big_eggs+broken_eggs
     
 
-
-       
-        if(eggs.objects.all().exists() and eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+        if(eggs.objects.all().exists() and len(eggs.objects.all()) != 1 and eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
             info = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[0]
             prev_closing = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].closing
             prev_total_birds = eggs.objects.filter(bt_lyr_no = bt_lyr_no).order_by('-id')[1].total_birds
@@ -283,7 +283,7 @@ def update_delivery_hens(request):
         delivery_broken = int(request.POST.get("deliver_broken"))
 
         info = delivery()
-        if(delivery.objects.all().exists()  and delivery.objects.filter(name = vendor_name).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
+        if(delivery.objects.all().exists() and len(delivery.objects.all()) !=1 and delivery.objects.filter(name = vendor_name).order_by('-id')[0].date_time.strftime("%Y-%m-%d") == timezone.now().strftime("%Y-%m-%d")):
             info = delivery.objects.filter(name = vendor_name).order_by('-id')[0]
         else:
             info = delivery()
@@ -344,7 +344,40 @@ def add_user(request):
         form = add_form()
         context = {'form': form,}
         return render(request,'admin/add_user.html',context)
-    
+
+def add_layer(request):
+    if request.method == 'POST':
+        form = add_layerForm(request.POST)
+        if(form.is_valid()):
+            layer_no = form.cleaned_data.get('layer_no')
+            occupied = form.cleaned_data.get('occupied')
+            lyr = layer()
+            lyr.layer_no = layer_no
+            lyr.occupied = occupied
+            lyr.save()
+            return HttpResponseRedirect('/admin_report');
+    else:
+        form = add_layerForm()
+        context = {'form': form,}
+        return render(request,'admin/add_layer.html',context) 
+
+def add_vendor(request):
+    if request.method == 'POST':
+        form = add_vendorForm(request.POST)
+        if(form.is_valid()):
+            name = form.cleaned_data.get('name')
+            company_name = form.cleaned_data.get('company_name')
+            phno = form.cleaned_data.get('phno')
+            ven = vendor()
+            ven.name = name
+            ven.company_name = company_name
+            ven.phno = phno
+            ven.save()
+            return HttpResponseRedirect('/admin_report');
+    else:
+        form = add_vendorForm()
+        context = {'form': form,}
+        return render(request,'admin/add_vendor.html',context) 
 
 def admin_menu(request):
     batches = chicks.objects.filter(active = True)
@@ -356,7 +389,6 @@ def admin_menu(request):
         batch_layer_nos.append(l)
     weekly_report = eggs.objects.filter(bt_lyr_no__in = batch_layer_nos,date_time__range = week_range(datetime.date.today()))
     weekly_report = weekly_report.values('bt_lyr_no').annotate(avg_production = Avg('production'))
-    
     batch_layer_nos = []
     for i in weekly_report:
         batch_layer_nos.append(i['bt_lyr_no'])
