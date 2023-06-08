@@ -29,10 +29,53 @@
               background-color: #3022b4;
               color: white;
             }
+            .button-21 {
+  align-items: center;
+  appearance: none;
+  background-color: #3EB2FD;
+  background-image: linear-gradient(1deg, #4F58FD, #149BF3 99%);
+  background-size: calc(100% + 20px) calc(100% + 20px);
+  border-radius: 100px;
+  border-width: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: CircularStd,sans-serif;
+  font-size: 1rem;
+  height: auto;
+  justify-content: center;
+  line-height: 1.5;
+  padding: 6px 20px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color .2s,background-position .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.button-21:active,
+.button-21:focus {
+  outline: none;
+}
+
+.button-21:hover {
+  background-position: -20px -20px;
+}
+
+.button-21:focus:not(:active) {
+  box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
+}
 
     </style>
 </head>
 <body>
+ 
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
@@ -75,5 +118,10 @@
         {% endfor %}
         </tbody>
     </table>
+    <br> <br> <br>
+
+    <div class="logout">
+      <a href="{% url 'home' %}"><button class="button-21" role="button" type="submit">Back to Home Page</button></a>
+    </div>
 </body>
 </html>
