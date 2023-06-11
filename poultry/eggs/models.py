@@ -117,6 +117,7 @@ class delivery(models.Model):
  
     date_time = models.DateTimeField(editable=True,default=timezone.now())
     
+    bt_lyr_no =  models.ForeignKey(bt_lyr,on_delete=models.DO_NOTHING,default = bt_lyr.objects.get(id = 4).id)
     name = models.ForeignKey(vendor,on_delete=models.DO_NOTHING)
     #delivery
 

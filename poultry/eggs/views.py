@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 from datetime import timedelta
 import datetime
-from django.db.models import Avg
+from django.db.models import Avg,Sum
 
 from eggs.forms import *
 from eggs.models import *
@@ -274,8 +274,7 @@ def update_eggs_hens(request):
     
 def update_delivery_hens(request):
     if request.method == 'POST':
-        # bt_lyr_no = int(request.POST.get("bt_lyr"))
-
+        bt_lyr_no = int(request.POST.get("bt_lyr"))
         vendor_name = int(request.POST.get("vendor_name"))
         delivery_normal = int(request.POST.get("deliver_normal"))
         delivery_small = int(request.POST.get("deliver_small"))
@@ -287,7 +286,7 @@ def update_delivery_hens(request):
             info = delivery.objects.filter(name = vendor_name).order_by('-id')[0]
         else:
             info = delivery()
-        # info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
+        info.bt_lyr_no = bt_lyr.objects.get(id = bt_lyr_no)
 
         info.name = vendor.objects.get(id = vendor_name)
         info.delivery_normal = delivery_normal*30
@@ -302,9 +301,9 @@ def update_delivery_hens(request):
         return HttpResponseRedirect('/success')
     else:
         date = timezone.now().strftime("%Y-%m-%d")
-        # bt_lyrs = bt_lyr.objects.filter(active = True)
+        bt_lyrs = bt_lyr.objects.filter(active = True)
         vendor_names = vendor.objects.all()
-        return render(request,"delivery_input_hen.html",{'date':date,'vendor_names':vendor_names})
+        return render(request,"delivery_input_hen.html",{'date':date,'vendor_names':vendor_names,'bt_lyrs':bt_lyrs})
 
 
 def success(request):
@@ -426,6 +425,11 @@ def admin_menu(request):
 
     else:
         form = flt_form()
+
+    total_eggs = eggs.objects.filter(bt_lyr_no__in = bt_lyr.objects.filter(active = True)).aggregate(Sum('day_total'))
+    total_delivery = delivery.objects.filter(bt_lyr_no__in = bt_lyr.objects.filter(active = True)).aggregate(Sum('total_delivery'))
+    total_stock = [total_eggs['day_total__sum'],total_delivery['total_delivery__sum'],total_eggs['day_total__sum']-total_delivery['total_delivery__sum']]
+        
     if(reports.exists()):
         for i,record in enumerate(reports,1):
             avg_production += record.production
@@ -437,6 +441,7 @@ def admin_menu(request):
                'layers':layers,
                'form': form,
                'avg_production': avg_production,
+               'total_stock': total_stock,
                'dict': dict}
     return render(request,'admin/admin_menu.html',context)
 
