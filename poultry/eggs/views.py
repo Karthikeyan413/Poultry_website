@@ -433,7 +433,7 @@ def admin_menu(request):
     if(reports.exists()):
         for i,record in enumerate(reports,1):
             avg_production += record.production
-        avg_production = avg_production/i
+        avg_production = round(avg_production/i,2)
 
     # print(batch_layer_nos.values('layer_no','batch_no'))
 
