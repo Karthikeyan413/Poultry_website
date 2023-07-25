@@ -482,3 +482,20 @@ def layer_report(request):
         'report': report,
     }
     return render(request,'office_staff/layer_report.html',context)
+
+def index(request):
+    if request.method=="POST":
+        contact=Contact()
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        subject=request.POST.get('subject')
+        message=request.POST.get('message')
+        contact.name=name
+        contact.email=email
+        contact.subject=subject
+        contact.message=message
+        contact.save()
+        return HttpResponse("<h1>Thank You ,Your Response Submitted...</h1>")
+
+
+    return render(request,'home.html')

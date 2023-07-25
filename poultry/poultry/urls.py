@@ -42,4 +42,5 @@ urlpatterns = [
     path('add_vendor/', views.add_vendor, name='add_vendor'),
     path('admin_report/',views.admin_menu,name='admin_report'),
     path('layer_report/',views.layer_report,name='layer_report'),
+    path('index',views.index,name="index"),
 ]

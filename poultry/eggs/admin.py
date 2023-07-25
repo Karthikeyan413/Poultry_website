@@ -13,3 +13,5 @@ admin.site.register(eggs)
 admin.site.register(delivery)
 admin.site.register(feed_hen)
 admin.site.register(vendor)
+admin.site.register(Contact)
+
